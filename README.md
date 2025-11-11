@@ -27,4 +27,30 @@ Adafruit_GFX
 
 ![WiringDiagram](DT_Wiring.png)
 
+Wokwi (online simulator)
+-------------------------
+You can run the project in Wokwi using an ESP32 dev board and an ST7789 display component. 
+
+**Quick Start:**
+1. Clone/fork this repository and open it in Wokwi (Wokwi will auto-detect the `wokwi.json` file).
+2. The `wokwi.json` file includes a pre-configured ESP32 dev board wired to an ST7789 display with the correct pin mappings.
+3. In the Wokwi editor, add the build flag `-DWOKWI` to the project settings (under the "Project Info" gear icon).
+4. Click "Start Simulation" to build and run. The display should render graphically.
+5. Open the Serial Monitor in Wokwi to see debug output and game state.
+
+**Manual Setup (if you prefer):**
+1. Create a new Wokwi project and select an ESP32 board (e.g., "ESP32 Dev Module").
+2. Add an ST7789 display component in the Wokwi editor and wire it to the ESP32 as follows (matches the default pins in the code when `WOKWI` is defined):
+	- SCLK -> GPIO18
+	- MOSI -> GPIO23
+	- CS   -> GPIO5
+	- DC   -> GPIO16
+	- RST  -> GPIO17
+3. Ensure the Adafruit libraries are available in the Wokwi project (Wokwi pulls common Arduino libraries automatically when building).
+4. Add `-DWOKWI` to the project's build flags so the code uses the real ST7789 driver.
+5. Run the simulation and open the Serial Monitor to see debug output. The display should render graphically in Wokwi.
+
+**SIMULATION Mode (headless/serial-only):**
+If you prefer a lighter simulation that logs display actions to Serial instead of rendering graphically, use `SIMULATION` mode by adding `-DSIMULATION` to your build flags. This is useful for quick headless builds and continuous integration.
+
 

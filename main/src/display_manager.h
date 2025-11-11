@@ -1,12 +1,62 @@
 #ifndef DISPLAY_MANAGER_H
 #define DISPLAY_MANAGER_H
 
-#include <Adafruit_GFX.h>    // Core graphics library
-#include <Adafruit_ST7789.h> // Hardware-specific library for ST7789
 #include <SPI.h>
+#include <Adafruit_GFX.h>    // Core graphics library
+#if !defined(SIMULATION)
+#include <Adafruit_ST7789.h> // Hardware-specific library for ST7789
+#else
+// Simple simulation stub used when building with -DSIMULATION (Wokwi, CI, etc.)
+#include <Arduino.h>
+// Minimal color definitions used by the code (standard RGB565 values)
+#define ST77XX_BLACK   0x0000
+#define ST77XX_WHITE   0xFFFF
+#define ST77XX_RED     0xF800
+#define ST77XX_GREEN   0x07E0
+#define ST77XX_BLUE    0x001F
+#define ST77XX_YELLOW  0xFFE0
+#define ST77XX_CYAN    0x07FF
+#define ST77XX_MAGENTA 0xF81F
+
+class Adafruit_ST7789 {
+public:
+  Adafruit_ST7789(int8_t cs, int8_t dc, int8_t rst) {}
+  void init(int w, int h) { width_ = w; height_ = h; }
+  void setSPISpeed(uint32_t) {}
+  void setFont(const void*) {}
+  void setTextWrap(bool) {}
+  void fillScreen(uint16_t) { Serial.println("[SIM] fillScreen"); }
+  void drawRGBBitmap(int16_t x, int16_t y, const uint16_t* p, int16_t w, int16_t h) { Serial.printf("[SIM] drawRGBBitmap %d,%d %dx%d\n", x, y, w, h); }
+  void startWrite() {}
+  void setAddrWindow(int16_t, int16_t, int16_t, int16_t) {}
+  void writePixels(const uint16_t*, int16_t) {}
+  void endWrite() {}
+  void fillRect(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t) { Serial.printf("[SIM] fillRect %d,%d %dx%d\n", x, y, w, h); }
+  void setCursor(int16_t x, int16_t y) { cursorX = x; cursorY = y; }
+  void setTextColor(uint16_t) {}
+  void print(const String& s) { cursorX += s.length() * 6; }
+  int16_t getCursorX() { return cursorX; }
+  int16_t width() { return width_; }
+  int16_t height() { return height_; }
+private:
+  int16_t width_ = 240;
+  int16_t height_ = 320;
+  int16_t cursorX = 0;
+  int16_t cursorY = 0;
+};
+#endif
 #include <array>
 #include <vector>
 #include "screen_layout.h"
+
+// If building for Wokwi (online simulator), use these default pin mappings
+// and allow the real Adafruit ST7789 driver to be used. Adjust wiring in
+// the Wokwi editor to match these pins.
+#if defined(WOKWI)
+  #define TFT_CS         5
+  #define TFT_RST        17
+  #define TFT_DC         16
+#endif
 
 #if defined(ARDUINO_FEATHER_ESP32) // Feather Huzzah32
   #define TFT_CS         14

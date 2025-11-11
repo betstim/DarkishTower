@@ -1,5 +1,36 @@
 #include <Arduino.h>
 #include "sound_manager.h"
+
+#if defined(SIMULATION)
+// Simple simulation implementations so code compiles and runs without ESP-specific APIs
+void playSound(int pinSpk, const SoundFile& sound) {
+    Serial.println("[SIM] playSound called");
+    // don't spam delay for large sounds; just pretend
+    delay(10);
+}
+
+void SoundManager::setup(int pin) {
+    mOutputPin = pin;
+    mMutex = xSemaphoreCreateMutex();
+}
+
+void SoundManager::play(const SoundFile& sound, bool waitForSong) {
+    // In simulation, just print
+    Serial.println("[SIM] SoundManager::play");
+}
+
+void SoundManager::stop() {
+    Serial.println("[SIM] SoundManager::stop");
+}
+
+bool SoundManager::isPlaying() { return false; }
+bool SoundManager::isWaitingForSong() { return false; }
+void SoundManager::update() {}
+void SoundManager::audio_timer_callback(void*) {}
+void SoundManager::onTimer() {}
+
+#else
+// Original hardware implementation
 //#include <driver/dac.h>
 
 void playSound(int pinSpk, const SoundFile& sound) {
@@ -11,10 +42,10 @@ void playSound(int pinSpk, const SoundFile& sound) {
          int64_t  elapsedTime = currentTime - lastTime;
          if (elapsedTime < 125) {
             int64_t waitTime = 125 - elapsedTime;
-			if (j % 1024 == 0) {
-				Serial.println(F("WaitTimeSample: "));
-				Serial.println(waitTime, DEC);
-			}
+            if (j % 1024 == 0) {
+                Serial.println(F("WaitTimeSample: "));
+                Serial.println(waitTime, DEC);
+            }
             usleep(waitTime);
          }
       }
@@ -31,12 +62,10 @@ void SoundManager::setup(int pin) {
             /* name is optional, but may help identify the timer when debugging */
             .arg = (void*)this,
             .name = "audioPlayer",
-            
     };
 
     esp_timer_handle_t periodic_timer;
     ESP_ERROR_CHECK(esp_timer_create(&periodic_timer_args, &mAudioTimer));
-    
 }
 
 void SoundManager::play(const SoundFile& sound, bool waitForSong) {
@@ -123,3 +152,5 @@ void SoundManager::onTimer() {
         }
     }
 }
+
+#endif

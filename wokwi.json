@@ -1,0 +1,87 @@
+{
+  "version": 1,
+  "env": {
+    "WOKWI_PROJECT_ID": "darkish-tower"
+  },
+  "meta": {
+    "api_version": 1,
+    "name": "DarkishTower - Wokwi Simulation",
+    "author": "DarkishTower Contributors",
+    "title": "DarkishTower Game - Wokwi ESP32 Simulation"
+  },
+  "parts": [
+    {
+      "type": "wokwi-esp32-devkit-v1",
+      "id": "esp32",
+      "top": 0,
+      "left": 0,
+      "attrs": {
+        "env": "wokwi"
+      }
+    },
+    {
+      "type": "wokwi-st7789",
+      "id": "display",
+      "top": 0,
+      "left": 250,
+      "attrs": {
+        "width": "240",
+        "height": "320",
+        "backgroundColor": "#000000"
+      }
+    }
+  ],
+  "connections": [
+    [
+      "esp32:TX",
+      "display:TX",
+      "cyan"
+    ],
+    [
+      "esp32:RX",
+      "display:RX",
+      "cyan"
+    ],
+    [
+      "esp32:GND",
+      "display:GND",
+      "black"
+    ],
+    [
+      "esp32:5V",
+      "display:5V",
+      "red"
+    ],
+    [
+      "esp32:5",
+      "display:CS",
+      "orange"
+    ],
+    [
+      "esp32:16",
+      "display:DC",
+      "yellow"
+    ],
+    [
+      "esp32:17",
+      "display:RST",
+      "green"
+    ],
+    [
+      "esp32:23",
+      "display:MOSI",
+      "blue"
+    ],
+    [
+      "esp32:18",
+      "display:CLK",
+      "purple"
+    ],
+    [
+      "esp32:19",
+      "display:MISO",
+      "gray"
+    ]
+  ],
+  "dependencies": {}
+}
