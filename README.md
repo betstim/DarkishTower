@@ -54,3 +54,4 @@ You can run the project in Wokwi using an ESP32 dev board and an ST7789 display 
 If you prefer a lighter simulation that logs display actions to Serial instead of rendering graphically, use `SIMULATION` mode by adding `-DSIMULATION` to your build flags. This is useful for quick headless builds and continuous integration.
 
 
+# DarkishTower
