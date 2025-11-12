@@ -1,0 +1,9 @@
+version = 1
+
+[build]
+elf = "build/main.ino.elf"
+
+[wokwi]
+
+[simulation]
+timeout = 15000
